@@ -11,23 +11,23 @@ pipeline {
         stage("Build"){
             steps {
                 echo "building the image"
-                sh "docker build -t my-note-app ."
+                bat "docker build -t my-note-app ."
             }
         }
         stage("Push to Docker Hub"){
             steps {
                 echo "pushing the image to docker hub"
                 withCredentials([usernamePassword(credentialsId:"dockerhub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
-                sh "docker tag my-note-app ${env.dockerHubUser}/my-note-app:latest"
-                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                sh "docker push ${env.dockerHubUser}/my-note-app:latest"
+                bat "docker tag my-note-app ${env.dockerHubUser}/my-note-app:latest"
+                bat "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+                bat "docker push ${env.dockerHubUser}/my-note-app:latest"
                 }
             }
         }
         stage("Deploy"){
             steps {
                 echo "Deploying the container"
-                sh "docker run -d -p 8001:8001 sandygajmoti/my-note-app:latest"
+                bat "docker run -d -p 8001:8001 sandygajmoti/my-note-app:latest"
             }
         }
     }
